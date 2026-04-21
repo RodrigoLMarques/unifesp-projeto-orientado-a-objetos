@@ -16,7 +16,7 @@ export class StripeAdapter implements IGateway {
 
   charge(amount: number, currency: string): PaymentResult {
     console.log(
-      `Stripe: generateCharge(${amount}, ${currency}) [endpoint: ${this.config.endpoint}]`,
+      `Stripe: createCharge(${amount}, ${currency}) [endpoint: ${this.config.endpoint}]`,
     );
     const response = this.sdk.createCharge(amount, currency);
     return {

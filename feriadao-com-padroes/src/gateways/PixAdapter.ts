@@ -2,7 +2,10 @@ import { ConfigService } from "../config/ConfigService";
 import { IGateway, PaymentResult } from "./IGateway";
 
 class PixSDK {
-  generateCharge(amount: number, currency: string): { txid: string; status: "ACTIVE" | "CANCELED" } {
+  generateCharge(
+    amount: number,
+    currency: string,
+  ): { txid: string; status: "ACTIVE" | "CANCELED" } {
     return { txid: `pix_${crypto.randomUUID()}`, status: "ACTIVE" };
   }
 }
