@@ -2,6 +2,7 @@ import { ConfigService } from "./config/ConfigService";
 import { LogDecorator, RetryDecorator } from "./decorators";
 import { GatewayFactory } from "./factories";
 import { AuditProxy } from "./proxy";
+import { EmailObserver, ObservableGateway, OrderObserver } from "./events";
 
 // Singleton
 const config1 = ConfigService.getInstance();
@@ -23,3 +24,16 @@ proxy.charge(100, "BRL");
 proxy.charge(250, "USD");
 proxy.charge(50, "BRL");
 console.log("Histórico:", proxy.getHistory());
+
+// Observer
+const gateway = new ObservableGateway(GatewayFactory.create("boleto"));
+const emailObserver = new EmailObserver();
+const orderObserver = new OrderObserver();
+gateway.addObserver(emailObserver);
+gateway.addObserver(orderObserver);
+
+gateway.charge(99.90, "BRL");
+
+gateway.removeObserver(emailObserver);
+
+gateway.charge(149.90, "BRL");
