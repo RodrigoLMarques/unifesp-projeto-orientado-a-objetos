@@ -1,9 +1,14 @@
+import { ConfigService } from "./config/ConfigService";
 import { BoletoAdapter } from "./gateways/BoletoAdapter";
 import { PixAdapter } from "./gateways/PixAdapter";
 import { StripeAdapter } from "./gateways/StripeAdapter";
 
-console.log("Hello World!");
+// Singleton
+const config1 = ConfigService.getInstance();
+const config2 = ConfigService.getInstance();
+console.log("Mesma instância?", config1 === config2);
 
+// Adapters
 const boleto = new BoletoAdapter();
 const result = boleto.charge(100, "BRL");
 console.log(result);

@@ -1,22 +1,23 @@
+import { ConfigService } from "../config/ConfigService";
 import { IGateway, PaymentResult } from "./IGateway";
 
 class PixSDK {
-  gerarCobranca(
-    amount: number,
-    currency: string,
-  ): { txid: string; status: "ATIVA" | "CANCELADA" } {
-    return { txid: `pix_${crypto.randomUUID()}`, status: "ATIVA" };
+  generateCharge(amount: number, currency: string): { txid: string; status: "ACTIVE" | "CANCELED" } {
+    return { txid: `pix_${crypto.randomUUID()}`, status: "ACTIVE" };
   }
 }
 
 export class PixAdapter implements IGateway {
   private sdk = new PixSDK();
+  private config = ConfigService.getInstance().getPixConfig();
 
   charge(amount: number, currency: string): PaymentResult {
-    console.log(`Pix: gerarCobranca(${amount}, ${currency})`);
-    const response = this.sdk.gerarCobranca(amount, currency);
+    console.log(
+      `Pix: generateCharge(${amount}, ${currency}) [endpoint: ${this.config.endpoint}]`,
+    );
+    const response = this.sdk.generateCharge(amount, currency);
     return {
-      success: response.status === "ATIVA",
+      success: response.status === "ACTIVE",
       transactionId: response.txid,
       amount,
       gateway: "pix",

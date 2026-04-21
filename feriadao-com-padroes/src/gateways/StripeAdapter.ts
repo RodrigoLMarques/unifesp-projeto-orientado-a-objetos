@@ -1,3 +1,4 @@
+import { ConfigService } from "../config/ConfigService";
 import { IGateway, PaymentResult } from "./IGateway";
 
 class StripeSDK {
@@ -11,9 +12,12 @@ class StripeSDK {
 
 export class StripeAdapter implements IGateway {
   private sdk = new StripeSDK();
+  private config = ConfigService.getInstance().getStripeConfig();
 
   charge(amount: number, currency: string): PaymentResult {
-    console.log(`Stripe: createCharge(${amount}, ${currency})`);
+    console.log(
+      `Stripe: generateCharge(${amount}, ${currency}) [endpoint: ${this.config.endpoint}]`,
+    );
     const response = this.sdk.createCharge(amount, currency);
     return {
       success: response.status === "succeeded",
