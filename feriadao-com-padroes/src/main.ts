@@ -1,8 +1,9 @@
 import { ConfigService } from "./config/ConfigService";
 import { LogDecorator, RetryDecorator } from "./decorators";
-import { GatewayFactory } from "./factories";
-import { AuditProxy } from "./proxy";
 import { EmailObserver, ObservableGateway, OrderObserver } from "./events";
+import { GatewayFactory } from "./factories";
+import { PaymentFacade } from "./PaymentFacade";
+import { AuditProxy } from "./proxy";
 
 // Singleton
 const config1 = ConfigService.getInstance();
@@ -14,7 +15,9 @@ const pix = new RetryDecorator(new LogDecorator(GatewayFactory.create("pix")));
 const pixResult = pix.charge(200, "BRL");
 console.log(pixResult);
 
-const stripe = new LogDecorator(new RetryDecorator(GatewayFactory.create("stripe")));
+const stripe = new LogDecorator(
+  new RetryDecorator(GatewayFactory.create("stripe")),
+);
 const stripeResult = stripe.charge(300, "USD");
 console.log(stripeResult);
 
@@ -32,8 +35,15 @@ const orderObserver = new OrderObserver();
 gateway.addObserver(emailObserver);
 gateway.addObserver(orderObserver);
 
-gateway.charge(99.90, "BRL");
-
+gateway.charge(99.9, "BRL");
 gateway.removeObserver(emailObserver);
+gateway.charge(149.9, "BRL");
 
-gateway.charge(149.90, "BRL");
+// Facade
+const facade = new PaymentFacade();
+
+facade.pay(150.0, "BRL", "stripe");
+facade.pay(299.9, "BRL", "pix");
+facade.pay(89.0, "BRL", "boleto");
+
+console.log(facade.getHistory());

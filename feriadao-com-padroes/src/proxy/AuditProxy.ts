@@ -1,6 +1,6 @@
 import { IGateway, PaymentResult } from "../gateways/IGateway";
 
-type AuditEntry =
+export type AuditEntry =
   | { timestamp: Date; input: { amount: number; currency: string }; output: PaymentResult }
   | { timestamp: Date; input: { amount: number; currency: string }; error: string };
 
